@@ -38,7 +38,7 @@ class ResponseHasherTest extends TestCase
     {
         $this->cacheProfile->shouldReceive('cacheNameSuffix')->andReturn('cacheProfileSuffix');
 
-        $this->assertEquals('laravel-responsecache-cc8efc2f40ad10ba3cf932adc786aeb5',
+        $this->assertEquals('laravel-responsecache-460bf3ed208092cdbf80d0d97224fc6f',
             $this->requestHasher->getHashFor($this->request));
     }
 }

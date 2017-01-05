@@ -9,17 +9,17 @@ use Spatie\ResponseCache\CacheProfiles\CacheProfile;
 class ResponseCache
 {
     /**
-     * @var ResponseCache
+     * @var \Spatie\ResponseCache\ResponseCacheRepository
      */
     protected $cache;
 
     /**
-     * @var RequestHasher
+     * @var \Spatie\ResponseCache\RequestHasher
      */
     protected $hasher;
 
     /**
-     * @var CacheProfile
+     * @var \Spatie\ResponseCache\CacheProfiles\CacheProfile
      */
     protected $cacheProfile;
 
@@ -61,6 +61,28 @@ class ResponseCache
     }
 
     /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
+     */
+    public function shouldGetCachedResponse(Request $request)
+    {
+        if (!config('laravel-responsecache.enabled')) {
+            return false;
+        }
+
+        if ($request->attributes->has('laravel-cacheresponse.doNotCache')) {
+            return false;
+        }
+
+        if (!$this->cacheProfile->shouldCacheRequest($request)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Store the given response in the cache.
      *
      * @param \Illuminate\Http\Request                   $request
@@ -73,6 +95,25 @@ class ResponseCache
         }
 
         $this->cache->put($this->hasher->getHashFor($request), $response, $this->cacheProfile->cacheRequestUntil($request));
+    }
+
+    /**
+     * Determine if related cache key should be invalidated.
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
+     */
+    public function shouldInvalidate(Request $request)
+    {
+        return $this->cacheProfile->shouldInvalidateCache($request);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     */
+    public function invalidateResponse(Request $request)
+    {
+        $this->cache->forget($this->hasher->getHashFor($request));
     }
 
     /**

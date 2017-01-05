@@ -26,7 +26,7 @@ class ResponseCacheMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->responseCache->hasCached($request)) {
+        if ($this->responseCache->shouldGetCachedResponse($request) && $this->responseCache->hasCached($request)) {
             return $this->responseCache->getCachedResponseFor($request);
         }
 
@@ -34,6 +34,10 @@ class ResponseCacheMiddleware
 
         if ($this->responseCache->shouldCache($request, $response)) {
             $this->responseCache->cacheResponse($request, $response);
+        }
+
+        if ($this->responseCache->shouldInvalidate($request)) {
+            $this->responseCache->invalidateResponse($request);
         }
 
         return $response;
