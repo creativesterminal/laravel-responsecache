@@ -67,19 +67,9 @@ class ResponseCache
      */
     public function shouldGetCachedResponse(Request $request)
     {
-        if (!config('laravel-responsecache.enabled')) {
-            return false;
-        }
-
-        if ($request->attributes->has('laravel-cacheresponse.doNotCache')) {
-            return false;
-        }
-
-        if (!$this->cacheProfile->shouldCacheRequest($request)) {
-            return false;
-        }
-
-        return true;
+        return config('laravel-responsecache.enabled')
+            && ! $request->attributes->has('laravel-cacheresponse.doNotCache')
+            && $this->cacheProfile->shouldCacheRequest($request);
     }
 
     /**
