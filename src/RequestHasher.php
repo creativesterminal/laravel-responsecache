@@ -26,8 +26,8 @@ class RequestHasher
      */
     public function getHashFor(Request $request)
     {
-        return 'laravel-responsecache-'.md5(
-            sprintf('%s/%s', $request->getUri(), $this->cacheProfile->cacheNameSuffix($request))
+        return config('cache.prefix').md5(
+            sprintf('%s/%s', $request->getRequestUri(), $this->cacheProfile->cacheNameSuffix($request))
         );
     }
 }
