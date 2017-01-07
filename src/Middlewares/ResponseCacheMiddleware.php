@@ -36,10 +36,6 @@ class ResponseCacheMiddleware
             $this->responseCache->cacheResponse($request, $response);
         }
 
-        if ($this->responseCache->shouldInvalidate($request)) {
-            $this->responseCache->invalidateResponse($request);
-        }
-
         return $response;
     }
 }

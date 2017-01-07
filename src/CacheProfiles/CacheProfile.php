@@ -26,15 +26,6 @@ interface CacheProfile
     public function shouldCacheResponse(Response $response);
 
     /**
-     * Determine if related cache key should be invalidated.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return bool
-     */
-    public function shouldInvalidateCache(Request $request);
-
-    /**
      * Return the time when the cache must be invalidated.
      *
      * @param \Illuminate\Http\Request $request

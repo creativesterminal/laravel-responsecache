@@ -88,17 +88,6 @@ class ResponseCache
     }
 
     /**
-     * Determine if related cache key should be invalidated.
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return bool
-     */
-    public function shouldInvalidate(Request $request)
-    {
-        return $this->cacheProfile->shouldInvalidateCache($request);
-    }
-
-    /**
      * @param \Illuminate\Http\Request $request
      */
     public function invalidateResponse(Request $request)
