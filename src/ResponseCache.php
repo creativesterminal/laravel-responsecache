@@ -89,10 +89,11 @@ class ResponseCache
 
     /**
      * @param \Illuminate\Http\Request $request
+     * @param string $keySuffix
      */
-    public function invalidateResponse(Request $request)
+    public function invalidateResponse(Request $request, string $keySuffix = null)
     {
-        $this->cache->forget($this->hasher->getHashFor($request));
+        $this->cache->forget($this->hasher->getHashFor($request, $keySuffix));
     }
 
     /**

@@ -21,13 +21,18 @@ class RequestHasher
      * Get a hash value for the given request.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $suffix
      *
      * @return string
      */
-    public function getHashFor(Request $request)
+    public function getHashFor(Request $request, string $suffix = null)
     {
+        if (! $suffix) {
+            $suffix = $this->cacheProfile->cacheNameSuffix($request);
+        }
+
         return config('cache.prefix').md5(
-            sprintf('%s/%s', $request->getRequestUri(), $this->cacheProfile->cacheNameSuffix($request))
+            sprintf('%s/%s', $request->getRequestUri(), $suffix)
         );
     }
 }
