@@ -31,8 +31,8 @@ class RequestHasher
             $suffix = $this->cacheProfile->cacheNameSuffix($request);
         }
 
-        return config('cache.prefix').md5(
+        return sprintf('%s-%s', config('cache.prefix'), md5(
             sprintf('%s/%s', $request->getRequestUri(), $suffix)
-        );
+        ));
     }
 }

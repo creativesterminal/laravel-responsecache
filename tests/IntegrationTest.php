@@ -29,20 +29,6 @@ class IntegrationTest extends TestCase
     /**
      * @test
      */
-    public function it_will_cache_redirects()
-    {
-        $firstResponse = $this->call('GET', '/redirect');
-        $secondResponse = $this->call('GET', '/redirect');
-
-        $this->assertRegularResponse($firstResponse);
-        $this->assertCachedResponse($secondResponse);
-
-        $this->assertSameResponse($firstResponse, $secondResponse);
-    }
-
-    /**
-     * @test
-     */
     public function it_will_not_cache_errors()
     {
         $firstResponse = $this->call('GET', '/notfound');

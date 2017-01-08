@@ -36,16 +36,6 @@ class CacheAllSuccessfulGetRequests extends BaseCacheProfile implements CachePro
      */
     public function shouldCacheResponse(Response $response)
     {
-        return $response->isSuccessful() || $response->isRedirection();
-    }
-
-    /**
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return bool
-     */
-    public function shouldInvalidateCache(Request $request)
-    {
-        return $request->isMethod('patch') || $request->isMethod('delete') || $request->isMethod('post');
+        return $response->isSuccessful();
     }
 }

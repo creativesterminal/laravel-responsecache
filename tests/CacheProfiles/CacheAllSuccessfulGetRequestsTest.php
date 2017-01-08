@@ -46,7 +46,7 @@ class CacheAllSuccessfulGetRequestsTest extends TestCase
      */
     public function it_will_determine_that_a_successful_response_should_be_cached()
     {
-        foreach (range(200, 399) as $statusCode) {
+        foreach (range(200, 299) as $statusCode) {
             $this->assertTrue($this->cacheProfile->shouldCacheResponse($this->createResponse($statusCode)));
         }
     }
