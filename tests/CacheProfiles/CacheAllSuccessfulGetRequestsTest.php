@@ -46,7 +46,7 @@ class CacheAllSuccessfulGetRequestsTest extends TestCase
      */
     public function it_will_determine_that_a_successful_response_should_be_cached()
     {
-        foreach (range(200, 399) as $statusCode) {
+        foreach (range(200, 299) as $statusCode) {
             $this->assertTrue($this->cacheProfile->shouldCacheResponse($this->createResponse($statusCode)));
         }
     }
@@ -59,19 +59,6 @@ class CacheAllSuccessfulGetRequestsTest extends TestCase
         foreach (range(400, 599) as $statusCode) {
             $this->assertFalse($this->cacheProfile->shouldCacheResponse($this->createResponse($statusCode)));
         }
-    }
-
-    /**
-     * @test
-     */
-    public function it_will_use_the_id_of_the_logged_in_user_to_differentiate_caches()
-    {
-        $this->assertEquals('', $this->cacheProfile->cacheNameSuffix($this->createRequest('get')));
-
-        User::all()->map(function ($user) {
-            auth()->login(User::find($user->id));
-            $this->assertEquals($user->id, $this->cacheProfile->cacheNameSuffix($this->createRequest('get')));
-        });
     }
 
     /**

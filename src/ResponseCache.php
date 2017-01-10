@@ -9,17 +9,17 @@ use Spatie\ResponseCache\CacheProfiles\CacheProfile;
 class ResponseCache
 {
     /**
-     * @var ResponseCache
+     * @var \Spatie\ResponseCache\ResponseCacheRepository
      */
     protected $cache;
 
     /**
-     * @var RequestHasher
+     * @var \Spatie\ResponseCache\RequestHasher
      */
     protected $hasher;
 
     /**
-     * @var CacheProfile
+     * @var \Spatie\ResponseCache\CacheProfiles\CacheProfile
      */
     protected $cacheProfile;
 
@@ -61,6 +61,18 @@ class ResponseCache
     }
 
     /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return bool
+     */
+    public function shouldGetCachedResponse(Request $request)
+    {
+        return config('laravel-responsecache.enabled')
+            && ! $request->attributes->has('laravel-cacheresponse.doNotCache')
+            && $this->cacheProfile->shouldCacheRequest($request);
+    }
+
+    /**
      * Store the given response in the cache.
      *
      * @param \Illuminate\Http\Request                   $request
@@ -73,6 +85,15 @@ class ResponseCache
         }
 
         $this->cache->put($this->hasher->getHashFor($request), $response, $this->cacheProfile->cacheRequestUntil($request));
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @param string $keySuffix
+     */
+    public function invalidateResponse(Request $request, string $keySuffix = null)
+    {
+        $this->cache->forget($this->hasher->getHashFor($request, $keySuffix));
     }
 
     /**

@@ -20,6 +20,7 @@ class LumenResponseCacheServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('laravel-responsecache', ResponseCache::class);
+        $this->app->configure('laravel-responsecache');
     }
 
     /**

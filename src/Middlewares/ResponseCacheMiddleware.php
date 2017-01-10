@@ -22,12 +22,19 @@ class ResponseCacheMiddleware
      * @param \Illuminate\Http\Request $request
      * @param \Closure                 $next
      *
-     * @return Request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($this->responseCache->hasCached($request)) {
-            return $this->responseCache->getCachedResponseFor($request);
+        if ($this->responseCache->shouldGetCachedResponse($request) && $this->responseCache->hasCached($request)) {
+            $response = $this->responseCache->getCachedResponseFor($request);
+
+            if (! $response->headers->has('ETag')) {
+                $response->setEtag(sha1($response->getContent()));
+            }
+            $response->isNotModified($request);
+
+            return $response;
         }
 
         $response = $next($request);

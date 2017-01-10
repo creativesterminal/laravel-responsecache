@@ -21,13 +21,18 @@ class RequestHasher
      * Get a hash value for the given request.
      *
      * @param \Illuminate\Http\Request $request
+     * @param string $suffix
      *
      * @return string
      */
-    public function getHashFor(Request $request)
+    public function getHashFor(Request $request, string $suffix = null)
     {
-        return 'laravel-responsecache-'.md5(
-            "{$request->getUri()}/{$request->getMethod()}/".$this->cacheProfile->cacheNameSuffix($request)
-        );
+        if (! $suffix) {
+            $suffix = $this->cacheProfile->cacheNameSuffix($request);
+        }
+
+        return sprintf('%s-%s', config('cache.prefix'), md5(
+            sprintf('%s/%s', $request->getRequestUri(), $suffix)
+        ));
     }
 }

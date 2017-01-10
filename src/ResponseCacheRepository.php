@@ -62,6 +62,16 @@ class ResponseCacheRepository
         return $this->responseSerializer->unserialize($this->cache->get($key));
     }
 
+    /**
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function forget(string $key)
+    {
+        return $this->cache->forget($key);
+    }
+
     public function flush()
     {
         $this->cache->flush();

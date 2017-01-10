@@ -29,24 +29,8 @@ class IntegrationTest extends TestCase
     /**
      * @test
      */
-    public function it_will_cache_redirects()
-    {
-        $firstResponse = $this->call('GET', '/redirect');
-        $secondResponse = $this->call('GET', '/redirect');
-
-        $this->assertRegularResponse($firstResponse);
-        $this->assertCachedResponse($secondResponse);
-
-        $this->assertSameResponse($firstResponse, $secondResponse);
-    }
-
-    /**
-     * @test
-     */
     public function it_will_not_cache_errors()
     {
-        $this->setExpectedException(NotFoundHttpException::class);
-
         $firstResponse = $this->call('GET', '/notfound');
         $secondResponse = $this->call('GET', '/notfound');
 
@@ -82,34 +66,6 @@ class IntegrationTest extends TestCase
         $this->assertRegularResponse($secondResponse);
 
         $this->assertDifferentResponse($firstResponse, $secondResponse);
-    }
-
-    /**
-     * @test
-     */
-    public function it_will_cache_responses_for_each_logged_in_user_seperately()
-    {
-        $this->call('GET', '/login/1');
-        $firstUserFirstCall = $this->call('GET', '/');
-        $firstUserSecondCall = $this->call('GET', '/');
-        $this->call('GET', 'logout');
-
-        $this->call('GET', '/login/2');
-        $secondUserFirstCall = $this->call('GET', '/');
-        $secondUserSecondCall = $this->call('GET', '/');
-        $this->call('GET', 'logout');
-
-        $this->assertRegularResponse($firstUserFirstCall);
-        $this->assertCachedResponse($firstUserSecondCall);
-
-        $this->assertRegularResponse($secondUserFirstCall);
-        $this->assertCachedResponse($secondUserSecondCall);
-
-        $this->assertSameResponse($firstUserFirstCall, $firstUserSecondCall);
-        $this->assertSameResponse($secondUserFirstCall, $secondUserSecondCall);
-
-        $this->assertDifferentResponse($firstUserFirstCall, $secondUserSecondCall);
-        $this->assertDifferentResponse($firstUserSecondCall, $secondUserSecondCall);
     }
 
     /**
