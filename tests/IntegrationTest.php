@@ -114,4 +114,28 @@ class IntegrationTest extends TestCase
 
         $this->assertDifferentResponse($firstResponse, $secondResponse);
     }
+
+    /**
+     * @test
+     */
+    public function it_will_serve_304_if_not_modified__and_response_not_yet_on_cache_and_cache_full_response()
+    {
+        $expectedEtag = "\"478fa8c0ee80fa1fe3946c71510a35f5df93f6fa\"";
+
+        $firstResponse = $this->call('GET', '/fixed', [], [], [], ['HTTP_IF_NONE_MATCH' => $expectedEtag]);
+        $secondResponse = $this->call('GET', '/fixed', [], [], [], ['HTTP_IF_NONE_MATCH' => $expectedEtag]);
+        $thirdResponse = $this->call('GET', '/fixed');
+
+        $this->assertRegularResponse($firstResponse);
+        $this->assertEquals(304, $firstResponse->getStatusCode());
+        $this->assertEquals($expectedEtag, $firstResponse->getEtag());
+
+        $this->assertCachedResponse($secondResponse);
+        $this->assertEquals(304, $secondResponse->getStatusCode());
+        $this->assertEquals($expectedEtag, $secondResponse->getEtag());
+
+        $this->assertCachedResponse($thirdResponse);
+        $this->assertEquals(200, $thirdResponse->getStatusCode());
+        $this->assertEquals($expectedEtag, $thirdResponse->getEtag());
+    }
 }

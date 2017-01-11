@@ -75,16 +75,30 @@ class ResponseCache
     /**
      * Store the given response in the cache.
      *
-     * @param \Illuminate\Http\Request                   $request
+     * @param \Illuminate\Http\Request $request
      * @param \Symfony\Component\HttpFoundation\Response $response
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function cacheResponse(Request $request, Response $response)
+    public function cacheResponse(Request $request, Response $response) : Response
     {
-        if (config('laravel-responsecache.addCacheTimeHeader')) {
-            $response = $this->addCachedHeader($response);
-        }
+        $responseToCache = clone $response;
 
-        $this->cache->put($this->hasher->getHashFor($request), $response, $this->cacheProfile->cacheRequestUntil($request));
+        if (config('laravel-responsecache.addCacheTimeHeader')) {
+            $responseToCache = $this->addCachedHeader($response);
+        }
+        $this->cache->put(
+            $this->hasher->getHashFor($request),
+            $responseToCache,
+            $this->cacheProfile->cacheRequestUntil($request)
+        );
+
+        if (! $response->headers->has('ETag')) {
+            $response->setEtag(sha1($response->getContent()));
+        }
+        $response->isNotModified($request);
+
+        return $response;
     }
 
     /**

@@ -109,6 +109,10 @@ abstract class TestCase extends Orchestra
             return str_random();
         });
 
+        Route::any('/fixed', function () {
+            return 'fixed content';
+        });
+
         Route::any('/redirect', function () {
             return redirect('/');
         });
