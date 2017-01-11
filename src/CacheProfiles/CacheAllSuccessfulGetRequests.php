@@ -16,10 +16,6 @@ class CacheAllSuccessfulGetRequests extends BaseCacheProfile implements CachePro
      */
     public function shouldCacheRequest(Request $request)
     {
-        if ($request->ajax()) {
-            return false;
-        }
-
         if ($this->isRunningInConsole()) {
             return false;
         }
