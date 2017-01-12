@@ -32,7 +32,7 @@ class RequestHasher
         }
 
         return sprintf('%s-%s', config('cache.prefix'), md5(
-            sprintf('%s/%s', $request->getRequestUri(), $suffix)
+            sprintf('/%s?%s/%s', $request->path(), $request->getQueryString(), $suffix)
         ));
     }
 }
